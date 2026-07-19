@@ -157,6 +157,18 @@ ENV/
 env.bak/
 venv.bak/
 
+# React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# VS Code
+.vscode/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
 # Spyder project settings
 .spyderproject
 .spyproject
