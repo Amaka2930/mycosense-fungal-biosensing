@@ -2,149 +2,182 @@ import { useEffect, useState } from "react";
 import {
   FiActivity,
   FiDroplet,
+  FiRefreshCw,
   FiSun,
   FiThermometer,
 } from "react-icons/fi";
-import { LuFlaskConical, LuSprout } from "react-icons/lu";
 
-import SensorCard from "../components/SensorCard.jsx";
 import { getLatestSensorData } from "../services/sensorService.js";
+import SensorCard from "../components/SensorCard.jsx";
 
 function Dashboard() {
-  const [latestData, setLatestData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [sampleType, setSampleType] = useState("ldpe_exposed");
+  const [sensorData, setSensorData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  async function loadLatestData() {
+  async function loadLatestReading() {
     try {
-      const data = await getLatestSensorData();
-
-      setLatestData(data);
+      setLoading(true);
       setError("");
-    } catch (requestError) {
-      console.error(requestError);
-      setError("Unable to connect to the sensor API.");
+
+      const data = await getLatestSensorData(sampleType);
+      setSensorData(data);
+    } catch (err) {
+      setError(err.message);
+      setSensorData(null);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadLatestData();
+    loadLatestReading();
 
-    const intervalId = setInterval(loadLatestData, 5000);
+    const intervalId = window.setInterval(loadLatestReading, 10000);
 
-    return () => clearInterval(intervalId);
-  }, []);
+    return () => window.clearInterval(intervalId);
+  }, [sampleType]);
 
-  if (isLoading) {
-    return (
-      <main className="dashboard-content">
-        <section className="dashboard-message">
-          Loading live sensor data...
-        </section>
-      </main>
-    );
+  function formatDate(dateValue) {
+    if (!dateValue) {
+      return "Not available";
+    }
+
+    return new Date(dateValue).toLocaleString("en-GB");
+  }
+
+  function sampleLabel(value) {
+    return value === "ldpe_exposed"
+      ? "LDPE Plastic Exposed"
+      : "Control – No Plastic";
   }
 
   return (
     <main className="dashboard-content">
-      <section className="dashboard-toolbar">
+      <section className="dashboard-top-row">
         <div>
           <p className="dashboard-eyebrow">Live experiment monitoring</p>
-          <h2>
-            {latestData?.sample_type === "ldpe_exposed"
-              ? "LDPE-Exposed Sample"
-              : "Control Sample"}
-          </h2>
+          <h2>{sampleLabel(sampleType)}</h2>
+          <p>
+            Latest environmental and fungal bioelectrical measurements.
+          </p>
         </div>
 
-        <div
-          className={`connection-badge ${
-            error ? "connection-error" : "connection-active"
-          }`}
-        >
-          <span />
-          {error ? "Disconnected" : "Real-time"}
-        </div>
-      </section>
+        <div className="dashboard-controls">
+          <select
+            value={sampleType}
+            onChange={(event) => setSampleType(event.target.value)}
+            aria-label="Select dashboard sample"
+          >
+            <option value="control">Control – no plastic</option>
+            <option value="ldpe_exposed">LDPE plastic exposed</option>
+          </select>
 
-      {error && <div className="dashboard-error">{error}</div>}
-
-      <section className="sensor-card-grid">
-        <SensorCard
-          title="Temperature"
-          value={latestData?.temperature}
-          unit="°C"
-          icon={<FiThermometer />}
-          className="temperature-card"
-        />
-
-        <SensorCard
-          title="Humidity"
-          value={latestData?.humidity}
-          unit="%"
-          icon={<FiDroplet />}
-          className="humidity-card"
-        />
-
-        <SensorCard
-          title="Soil Moisture"
-          value={latestData?.soil_moisture}
-          unit="%"
-          icon={<LuSprout />}
-          className="moisture-card"
-        />
-
-        <SensorCard
-          title="pH Level"
-          value={latestData?.ph_value}
-          icon={<LuFlaskConical />}
-          className="ph-card"
-        />
-
-        <SensorCard
-          title="Light Intensity"
-          value={latestData?.light_intensity}
-          unit="lux"
-          icon={<FiSun />}
-          className="light-card"
-        />
-
-        <SensorCard
-          title="Electrical Activity"
-          value={latestData?.electrical_activity}
-          unit="mV"
-          icon={<FiActivity />}
-          status="Active"
-          className="electrical-card"
-        />
-      </section>
-
-      <section className="latest-reading-panel">
-        <div>
-          <p>Device</p>
-          <strong>{latestData?.device_id ?? "--"}</strong>
-        </div>
-
-        <div>
-          <p>Sample</p>
-          <strong>
-            {latestData?.sample_type === "ldpe_exposed"
-              ? "LDPE Plastic Exposed"
-              : "Control – No Plastic"}
-          </strong>
-        </div>
-
-        <div>
-          <p>Last updated</p>
-          <strong>
-            {latestData?.created_at
-              ? new Date(latestData.created_at).toLocaleString("en-GB")
-              : "--"}
-          </strong>
+          <button
+            className="secondary-button"
+            type="button"
+            onClick={loadLatestReading}
+            disabled={loading}
+          >
+            <FiRefreshCw />
+            Refresh
+          </button>
         </div>
       </section>
+
+      {error && <div className="page-error">{error}</div>}
+
+      <section className="dashboard-live-row">
+        <span className="live-status">
+          <span className="live-status-dot" />
+          {loading ? "Updating..." : "Real-time"}
+        </span>
+
+        <span>
+          {sensorData
+            ? `Last updated: ${formatDate(sensorData.created_at)}`
+            : "No reading available"}
+        </span>
+      </section>
+
+      {sensorData && (
+        <>
+          <section className="sensor-card-grid">
+            <SensorCard
+              label="Temperature"
+              value={sensorData.temperature}
+              unit="°C"
+              icon={<FiThermometer />}
+              tone="temperature"
+            />
+
+            <SensorCard
+              label="Humidity"
+              value={sensorData.humidity}
+              unit="%"
+              icon={<FiDroplet />}
+              tone="humidity"
+            />
+
+            <SensorCard
+              label="Soil Moisture"
+              value={sensorData.soil_moisture}
+              unit="%"
+              icon="🌱"
+              tone="moisture"
+            />
+
+            <SensorCard
+              label="pH Level"
+              value={sensorData.ph_value}
+              unit=""
+              icon="pH"
+              tone="ph"
+            />
+
+            <SensorCard
+              label="Light Intensity"
+              value={sensorData.light_intensity}
+              unit="lux"
+              icon={<FiSun />}
+              tone="light"
+            />
+
+            <SensorCard
+              label="Electrical Activity"
+              value={sensorData.electrical_activity}
+              unit="mV"
+              icon={<FiActivity />}
+              tone="activity"
+            />
+          </section>
+
+          <section className="latest-reading-panel">
+            <div>
+              <span>Device</span>
+              <strong>{sensorData.device_id}</strong>
+            </div>
+
+            <div>
+              <span>Sample</span>
+              <strong>{sampleLabel(sensorData.sample_type)}</strong>
+            </div>
+
+            <div>
+              <span>Reading ID</span>
+              <strong>#{sensorData.id}</strong>
+            </div>
+          </section>
+        </>
+      )}
+
+      {!loading && !sensorData && !error && (
+        <section className="monitoring-empty">
+          <h3>No dashboard data available</h3>
+          <p>Start the simulator or send a reading from the Raspberry Pi.</p>
+        </section>
+      )}
     </main>
   );
 }

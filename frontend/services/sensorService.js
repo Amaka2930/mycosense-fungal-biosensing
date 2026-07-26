@@ -7,8 +7,15 @@ const api = axios.create({
   timeout: 10000,
 });
 
-export async function getLatestSensorData() {
-  const response = await api.get("/sensor-data/latest/");
+export async function getLatestSensorData(sampleType = "") {
+  const response = await api.get("/sensor-data/latest/", {
+    params: sampleType
+      ? {
+          sample_type: sampleType,
+        }
+      : {},
+  });
+
   return response.data;
 }
 

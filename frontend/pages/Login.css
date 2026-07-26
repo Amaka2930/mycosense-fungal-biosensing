@@ -1,0 +1,245 @@
+* {
+  box-sizing: border-box;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+  background:
+    radial-gradient(circle at top left, rgba(35, 145, 95, 0.12), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(16, 92, 63, 0.1), transparent 30%),
+    linear-gradient(135deg, #f7fbf8 0%, #e9f5ee 100%);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  padding: 42px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #d9e7df;
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(13, 71, 48, 0.14);
+}
+
+.login-brand {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-logo {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 18px;
+  border-radius: 22px;
+  background: #e6f5ed;
+  font-size: 38px;
+  box-shadow: inset 0 0 0 1px #d1eadd;
+}
+
+.login-card h1 {
+  margin: 0;
+  color: #123d2a;
+  font-size: 36px;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.login-subtitle {
+  max-width: 340px;
+  margin: 12px auto 0;
+  color: #68786f;
+  font-size: 15px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.login-form {
+  margin-top: 30px;
+}
+
+.login-field {
+  margin-bottom: 20px;
+}
+
+.login-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #263c31;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.login-field input {
+  width: 100%;
+  height: 52px;
+  padding: 0 15px;
+  border: 1px solid #ccd9d1;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #17251d;
+  font: inherit;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.login-field input:hover {
+  border-color: #aebfb5;
+}
+
+.login-field input:focus {
+  border-color: #138a59;
+  background: #fbfefc;
+  box-shadow: 0 0 0 4px rgba(19, 138, 89, 0.12);
+}
+
+.login-options {
+  display: flex;
+  justify-content: flex-end;
+  margin: -4px 0 22px;
+}
+
+.login-options a {
+  color: #0d8755;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-options a:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #16945f, #087b4d);
+  color: #ffffff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(8, 123, 77, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.login-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 13px 26px rgba(8, 123, 77, 0.24);
+}
+
+.login-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.login-error,
+.login-success {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 11px;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.login-error {
+  border: 1px solid #f0bcbc;
+  background: #fff1f1;
+  color: #a22d2d;
+}
+
+.login-success {
+  border: 1px solid #b8dfc8;
+  background: #edf9f2;
+  color: #17683f;
+}
+
+.register-row {
+  margin-top: 24px;
+  padding-top: 22px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  border-top: 1px solid #e8efeb;
+  color: #68776f;
+  font-size: 14px;
+}
+
+.register-row a {
+  color: #0d8755;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.register-row a:hover {
+  text-decoration: underline;
+}
+
+.login-footer {
+  margin: 22px 0 0;
+  color: #849089;
+  font-size: 12px;
+  text-align: center;
+}
+
+.login-back-link {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.login-back-link a {
+  color: #0d8755;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-back-link a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  .login-page {
+    padding: 18px;
+  }
+
+  .login-card {
+    padding: 30px 24px;
+    border-radius: 18px;
+  }
+
+  .login-card h1 {
+    font-size: 31px;
+  }
+}
+
+.register-card {
+  max-width: 560px;
+}
+
+.register-name-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 560px) {
+  .register-name-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
